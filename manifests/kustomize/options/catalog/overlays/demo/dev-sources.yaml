@@ -43,7 +43,7 @@ mcp_catalogs:
     type: yaml
     enabled: true
     properties:
-      yamlCatalogPath: partner-mcp-servers.yaml
+      yamlCatalogPath: partner-mcp-servers-no-logos.yaml
 
 
 # namedQueries define reusable server-side filter presets that clients can

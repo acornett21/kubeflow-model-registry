@@ -1,0 +1,1350 @@
+mcp_servers:
+  - name: cloudera/iceberg-mcp-server
+    displayName: Cloudera Iceberg MCP Server
+    provider: Cloudera
+    version: 1.0.0
+    documentationUrl: https://github.com/cloudera/iceberg-mcp-server
+    repositoryUrl: https://github.com/cloudera/iceberg-mcp-server
+    license: Unknown
+    description: >-
+      Enable AI on the open data lakehouse. Provides MCP interface for querying Apache Iceberg tables via Impala. Read-only SQL queries with schema discovery capabilities.
+    transports:
+      - stdio
+      - http
+      - sse
+    deploymentMode: local
+    toolCount: 2
+    artifacts:
+      - uri: oci://quay.io/mcp-servers/iceberg-mcp-server:10-2-2025@sha256:f7253cd2801a3c17c6cd3d0114d456d15142d0efb1139beb9c793e5fd393e055
+    tags:
+      - iceberg
+      - impala
+      - cloudera
+      - data-lakehouse
+      - sql
+      - query
+      - analytics
+      - read-only-queries
+    securityIndicators:
+      verifiedSource: true
+      secureEndpoint: true
+      readOnlyTools: true
+    tools:
+      - name: execute_query
+        description: >-
+          Executes SQL queries on Impala and returns results as JSON format
+        accessType: execute
+        parameters:
+          - name: query
+            type: string
+            required: true
+            description: >-
+              SQL query to execute on Impala (read-only SELECT operations)
+      - name: get_schema
+        description: >-
+          Retrieves a list of all available tables in the current database
+        accessType: read_only
+        parameters: [ ]
+    runtimeMetadata:
+      defaultPort: 8080
+      requiredEnvironmentVariables:
+        - name: IMPALA_HOST
+          description: >-
+            Hostname of the Impala coordinator
+          type: config
+          required: true
+        - name: IMPALA_PORT
+          description: >-
+            Port number for Impala connection
+          type: config
+          required: true
+        - name: IMPALA_USER
+          description: >-
+            Username for Impala authentication
+          type: secret
+          required: true
+        - name: IMPALA_PASSWORD
+          description: >-
+            Password for Impala authentication
+          type: secret
+          required: true
+        - name: IMPALA_DATABASE
+          description: >-
+            Target database name in Impala
+          type: config
+          required: true
+        - name: MCP_TRANSPORT
+          description: >-
+            Transport protocol mode (http, sse, stdio)
+          type: config
+          required: true
+      recommendedResources:
+        minimal:
+          cpu: 100m
+          memory: 256Mi
+        recommended:
+          cpu: 500m
+          memory: 512Mi
+  - name: confluentinc/mcp-confluent
+    displayName: Confluent Kafka MCP Server
+    provider: Confluent
+    version: 1.0.0
+    documentationUrl: https://github.com/confluentinc/mcp-confluent
+    repositoryUrl: https://github.com/confluentinc/mcp-confluent
+    license: Unknown
+    description: >-
+      Interact with Confluent Kafka and Confluent Cloud REST APIs. Enables AI assistants to manage Kafka topics, connectors, 
+      Flink SQL statements, Schema Registry, and Tableflow resources through natural language.
+    transports:
+      - stdio
+      - http
+      - sse
+    deploymentMode: local
+    toolCount: 46
+    artifacts:
+      - uri: oci://quay.io/mcp-servers/mcp-confluent:10-2-2025@sha256:314b69a43629a68c5075e33b05949f6c2d21eaa0534aa8e169c98940fa86aba4
+    tags:
+      - kafka
+      - confluent
+      - streaming
+      - flink
+      - schema-registry
+      - connectors
+    securityIndicators:
+      verifiedSource: true
+      secureEndpoint: true
+      readOnlyTools: false
+    tools:
+      - name: list-topics
+        description: >-
+          Enumerate all topics in the Kafka cluster
+        accessType: read_only
+        parameters: [ ]
+      - name: create-topics
+        description: >-
+          Provision one or more Kafka topics
+        accessType: read_write
+        parameters:
+          - name: topics
+            type: array
+            required: true
+            description: >-
+              Topic names and configurations to create
+      - name: produce-message
+        description: >-
+          Produce records to a Kafka topic with Schema Registry serialization
+        accessType: read_write
+        parameters:
+          - name: topic
+            type: string
+            required: true
+            description: >-
+              Target topic name
+      - name: consume-messages
+        description: >-
+          Consume messages from Kafka topics with automatic deserialization
+        accessType: read_only
+        parameters:
+          - name: topics
+            type: array
+            required: true
+            description: >-
+              Topic names to consume from
+      - name: create-flink-statement
+        description: >-
+          Create and execute a Flink SQL statement
+        accessType: execute
+        parameters:
+          - name: sql
+            type: string
+            required: true
+            description: >-
+              SQL query text
+    runtimeMetadata:
+      defaultPort: 8080
+      requiredEnvironmentVariables:
+        - name: CONFLUENT_CLOUD_API_KEY
+          description: >-
+            Master API key for Confluent Cloud
+          type: secret
+          required: true
+        - name: CONFLUENT_CLOUD_API_SECRET
+          description: >-
+            Master API secret for Confluent Cloud
+          type: secret
+          required: true
+      recommendedResources:
+        minimal:
+          cpu: 100m
+          memory: 256Mi
+        recommended:
+          cpu: 500m
+          memory: 512Mi
+  - name: jfrog/mcp-jfrog
+    displayName: JFrog MCP Server
+    provider: JFrog
+    version: 1.0.0
+    documentationUrl: https://jfrog.com/help/r/jfrog-integrations-documentation/jfrog-mcp-server
+    repositoryUrl: https://github.com/jfrog/mcp-jfrog
+    license: Apache-2.0
+    description: >-
+      Model Context Protocol server for the JFrog Platform API, enabling repository management, build tracking, release lifecycle management, 
+      runtime monitoring, security scanning, and package intelligence. Experimental project - not officially supported by JFrog.
+    transports:
+      - stdio
+      - sse
+    deploymentMode: local
+    toolCount: 22
+    artifacts:
+      - uri: oci://quay.io/mcp-servers/jfrog-mcp-jfrog:runnable@sha256:f46eb6fbda9e644c41ec0e1b3190c8e08522aa7aa66a39a4e6a2875d57f7b707
+    tags:
+      - jfrog
+      - artifactory
+      - xray
+      - devops
+      - ci-cd
+      - artifact-management
+      - security-scanning
+      - repository-management
+    securityIndicators:
+      verifiedSource: true
+      secureEndpoint: true
+      readOnlyTools: false
+    tools:
+      - name: check_jfrog_availability
+        description: >-
+          Verifies JFrog platform readiness and functionality
+        accessType: read_only
+        parameters: [ ]
+      - name: list_repositories
+        description: >-
+          Lists repositories with optional filtering by type and package type
+        accessType: read_only
+        parameters:
+          - name: type
+            type: string
+            required: false
+            description: >-
+              Filter by type (local/remote/virtual/federated)
+          - name: packageType
+            type: string
+            required: false
+            description: >-
+              Filter by package type
+      - name: create_local_repository
+        description: >-
+          Creates local artifact storage repositories
+        accessType: read_write
+        parameters:
+          - name: key
+            type: string
+            required: true
+            description: >-
+              Repository key/name
+          - name: packageType
+            type: string
+            required: true
+            description: >-
+              Package type (maven, npm, docker, etc.)
+      - name: execute_aql_query
+        description: >-
+          Runs Artifactory Query Language (AQL) searches for artifacts
+        accessType: read_only
+        parameters:
+          - name: query
+            type: string
+            required: true
+            description: >-
+              AQL query string
+      - name: list_jfrog_builds
+        description: >-
+          Lists all builds in the JFrog platform
+        accessType: read_only
+        parameters: [ ]
+      - name: jfrog_get_package_info
+        description: >-
+          Retrieves public package data for supported ecosystems (pypi/npm/maven/golang/nuget/huggingface/rubygems)
+        accessType: read_only
+        parameters:
+          - name: packageName
+            type: string
+            required: true
+            description: >-
+              Package name
+          - name: ecosystem
+            type: string
+            required: true
+            description: >-
+              Package ecosystem
+      - name: jfrog_get_package_version_vulnerabilities
+        description: >-
+          Shows CVEs affecting a specific package version with pagination
+        accessType: read_only
+        parameters:
+          - name: packageName
+            type: string
+            required: true
+            description: >-
+              Package name
+          - name: version
+            type: string
+            required: true
+            description: >-
+              Package version
+      - name: jfrog_get_artifacts_summary
+        description: >-
+          Provides vulnerability counts grouped by severity for artifacts
+        accessType: read_only
+        parameters:
+          - name: artifactPath
+            type: string
+            required: true
+            description: >-
+              Artifact path to scan
+      - name: list_jfrog_runtime_clusters
+        description: >-
+          Lists runtime clusters with pagination support
+        accessType: read_only
+        parameters: [ ]
+      - name: list_jfrog_running_images
+        description: >-
+          Lists running container images across clusters with filtering
+        accessType: read_only
+        parameters: [ ]
+    runtimeMetadata:
+      defaultPort: 8080
+      requiredEnvironmentVariables:
+        - name: JFROG_ACCESS_TOKEN
+          description: >-
+            JFrog Platform access token for authentication
+          type: secret
+          required: true
+        - name: JFROG_URL
+          description: >-
+            Base URL of JFrog Platform instance
+          type: config
+          required: true
+        - name: TRANSPORT
+          description: >-
+            Transport mode (stdio or sse)
+          type: config
+          required: true
+      recommendedResources:
+        minimal:
+          cpu: 100m
+          memory: 128Mi
+        recommended:
+          cpu: 250m
+          memory: 256Mi
+  - name: dynatrace-oss/dynatrace-mcp
+    displayName: Dynatrace MCP Server
+    provider: Dynatrace
+    version: 1.4.0
+    documentationUrl: https://www.dynatrace.com/hub/detail/dynatrace-mcp-server/
+    repositoryUrl: https://github.com/dynatrace-oss/dynatrace-mcp
+    license: MIT
+    description: >-
+      AI Assistants can interact with the Dynatrace observability platform, bringing real-time observability data directly 
+      into your development workflow. Query logs, events, spans, metrics via DQL.
+    transports:
+      - stdio
+      - http
+    deploymentMode: local
+    toolCount: 14
+    artifacts:
+      - uri: oci://quay.io/mcp-servers/dynatrace-mcp:10-01-2025@sha256:f72c1d456fe9101d2742c17f6000a56e53976e45fb401ed817f38ef49056e1a9
+    tags:
+      - dynatrace
+      - observability
+      - monitoring
+      - apm
+      - dql
+      - logs
+      - metrics
+      - traces
+    securityIndicators:
+      verifiedSource: true
+      secureEndpoint: true
+      readOnlyTools: false
+    tools:
+      - name: execute_dql
+        description: >-
+          Query Dynatrace using natural language or DQL (Dynatrace Query Language) statements; retrieves logs, events, spans, and metrics
+        accessType: read_only
+        parameters:
+          - name: query
+            type: string
+            required: true
+            description: >-
+              DQL query or natural language description of data to retrieve
+      - name: list_problems
+        description: >-
+          Identify service issues from monitored infrastructure
+        accessType: read_only
+        parameters:
+          - name: timeframe
+            type: string
+            required: false
+            description: >-
+              Time range for problem search
+          - name: status
+            type: string
+            required: false
+            description: >-
+              Filter by problem status
+      - name: get_problem_details
+        description: >-
+          Deep-dive into specific problems with full context
+        accessType: read_only
+        parameters:
+          - name: problem_id
+            type: string
+            required: true
+            description: >-
+              ID of the problem to investigate
+      - name: list_security_problems
+        description: >-
+          Track vulnerabilities and security events
+        accessType: read_only
+        parameters: [ ]
+      - name: get_entity_details
+        description: >-
+          Retrieve comprehensive information about monitored services, hosts, and applications
+        accessType: read_only
+        parameters:
+          - name: entity_id
+            type: string
+            required: true
+            description: >-
+              ID of the entity to inspect
+      - name: send_event
+        description: >-
+          Transmit custom event data to Dynatrace for ingestion
+        accessType: execute
+        parameters:
+          - name: event
+            type: object
+            required: true
+            description: >-
+              Event data to send to Dynatrace
+      - name: list_documents
+        description: >-
+          Retrieve Notebooks, Dashboards, and Launchpads from Dynatrace
+        accessType: read_only
+        parameters: [ ]
+      - name: create_document
+        description: >-
+          Generate new documents in Dynatrace
+        accessType: read_write
+        parameters:
+          - name: content
+            type: object
+            required: true
+            description: >-
+              Document content to create
+    runtimeMetadata:
+      defaultPort: 8585
+      defaultArgs:
+        - --http
+        - --port
+        - '8585'
+        - --host
+        - 0.0.0.0
+      requiredEnvironmentVariables:
+        - name: DT_ENVIRONMENT
+          description: >-
+            Dynatrace Platform URL
+          type: config
+          required: true
+        - name: DT_PLATFORM_TOKEN
+          description: >-
+            Dynatrace Platform API token
+          type: secret
+          required: false
+        - name: OAUTH_CLIENT_ID
+          description: >-
+            OAuth client ID for Dynatrace authentication
+          type: secret
+          required: false
+        - name: OAUTH_CLIENT_SECRET
+          description: >-
+            OAuth client secret for Dynatrace authentication
+          type: secret
+          required: false
+      recommendedResources:
+        minimal:
+          cpu: 100m
+          memory: 128Mi
+        recommended:
+          cpu: 250m
+          memory: 256Mi
+  - name: enterprisedb/postgres-mcp
+    displayName: Postgres MCP Pro
+    provider: EnterpriseDB
+    version: 1.0.0
+    documentationUrl: https://github.com/EnterpriseDB/postgres-mcp
+    repositoryUrl: https://github.com/EnterpriseDB/postgres-mcp
+    license: MIT
+    description: >-
+      Allow AI models to provide intelligent assistance to manage and optimize PostgreSQL databases. Provides schema inspection,
+      query execution, performance analysis, index tuning, and health checks.
+    transports:
+      - stdio
+      - sse
+      - streamable-http
+    deploymentMode: local
+    toolCount: 10
+    artifacts:
+      - uri: oci://quay.io/mcp-servers/edb-postgres-mcp:10-03-2025@sha256:91f44f82f68b0329bc10ae17182db8536292748760b80c9d8a20b4c64a6b010c
+    tags:
+      - postgresql
+      - postgres
+      - database
+      - sql
+      - query-optimization
+      - index-tuning
+      - performance
+    securityIndicators:
+      verifiedSource: true
+      secureEndpoint: true
+      readOnlyTools: false
+    tools:
+      - name: list_schemas
+        description: >-
+          Lists all database schemas available in the PostgreSQL instance
+        accessType: read_only
+        parameters: [ ]
+      - name: execute_sql
+        description: >-
+          Executes SQL statements on the database with restricted or unrestricted mode
+        accessType: read_write
+        parameters:
+          - name: query
+            type: string
+            required: true
+            description: >-
+              SQL query to execute
+      - name: analyze_workload_indexes
+        description: >-
+          Analyzes database workload to identify resource-intensive queries and recommend optimal indexes
+        accessType: read_only
+        parameters: [ ]
+      - name: analyze_db_health
+        description: >-
+          Performs comprehensive health checks including buffer cache, connections, constraints, indexes
+        accessType: read_only
+        parameters: [ ]
+      - name: get_top_queries
+        description: >-
+          Reports the slowest SQL queries based on total execution time
+        accessType: read_only
+        parameters: [ ]
+    runtimeMetadata:
+      defaultPort: 8000
+      requiredEnvironmentVariables:
+        - name: DATABASE_URI
+          description: >-
+            PostgreSQL connection string
+          type: secret
+          required: true
+      recommendedResources:
+        minimal:
+          cpu: 100m
+          memory: 256Mi
+        recommended:
+          cpu: 500m
+          memory: 512Mi
+  - name: hashicorp/terraform-mcp-server
+    displayName: Terraform MCP Server
+    provider: HashiCorp
+    version: 0.4.0
+    documentationUrl: https://developer.hashicorp.com/terraform/docs/tools/mcp-server
+    repositoryUrl: https://github.com/hashicorp/terraform-mcp-server
+    license: MPL-2.0
+    description: >-
+      Gain real-time access to current Terraform provider documentation, modules, and policies from the Terraform registry. v
+      Supports HCP Terraform and Terraform Enterprise workspace management. NOTE: Beta software - do not use in production environments.
+    transports:
+      - stdio
+      - http
+    deploymentMode: local
+    toolCount: 46
+    artifacts:
+      - uri: oci://quay.io/mcp-servers/terraform-mcp-server:10-03-2025@sha256:3ee433bce1b3e5856d83e366dbb368ebdd8a73b39670152fd20d2d1506f0c937
+    tags:
+      - terraform
+      - hashicorp
+      - infrastructure-as-code
+      - iac
+      - registry
+      - providers
+      - modules
+      - workspaces
+      - hcp-terraform
+      - beta
+    securityIndicators:
+      verifiedSource: true
+      secureEndpoint: true
+      readOnlyTools: false
+    tools:
+      - name: search_providers
+        description: >-
+          Search for Terraform providers in the registry
+        accessType: read_only
+        parameters:
+          - name: query
+            type: string
+            required: true
+            description: >-
+              Search query for providers
+      - name: get_provider_details
+        description: >-
+          Get details about a specific Terraform provider
+        accessType: read_only
+        parameters:
+          - name: provider
+            type: string
+            required: true
+            description: >-
+              Provider namespace/name
+      - name: search_modules
+        description: >-
+          Search for Terraform modules in the registry
+        accessType: read_only
+        parameters:
+          - name: query
+            type: string
+            required: true
+            description: >-
+              Search query for modules
+      - name: get_module_details
+        description: >-
+          Get details about a specific Terraform module
+        accessType: read_only
+        parameters:
+          - name: module
+            type: string
+            required: true
+            description: >-
+              Module namespace/name/provider
+      - name: list_workspaces
+        description: >-
+          List workspaces in a Terraform organization
+        accessType: read_only
+        parameters:
+          - name: organization
+            type: string
+            required: true
+            description: >-
+              Organization name
+      - name: create_workspace
+        description: >-
+          Create a new workspace in HCP Terraform/TFE
+        accessType: read_write
+        parameters:
+          - name: organization
+            type: string
+            required: true
+            description: >-
+              Organization name
+          - name: name
+            type: string
+            required: true
+            description: >-
+              Workspace name
+      - name: get_workspace_details
+        description: >-
+          Get details of a specific workspace
+        accessType: read_only
+        parameters:
+          - name: workspace
+            type: string
+            required: true
+            description: >-
+              Workspace name or ID
+      - name: list_runs
+        description: >-
+          List runs in a workspace
+        accessType: read_only
+        parameters:
+          - name: workspace
+            type: string
+            required: true
+            description: >-
+              Workspace name or ID
+      - name: create_run
+        description: >-
+          Create a new run in a workspace
+        accessType: execute
+        parameters:
+          - name: workspace
+            type: string
+            required: true
+            description: >-
+              Workspace name or ID
+      - name: search_policies
+        description: >-
+          Search for Sentinel policies in the registry
+        accessType: read_only
+        parameters:
+          - name: query
+            type: string
+            required: true
+            description: >-
+              Search query for policies
+    runtimeMetadata:
+      defaultPort: 8080
+      defaultArgs:
+        - streamable-http
+      requiredEnvironmentVariables:
+        - name: TRANSPORT_MODE
+          description: >-
+            Transport protocol mode
+          type: config
+          required: true
+        - name: TRANSPORT_HOST
+          description: >-
+            HTTP server bind address
+          type: config
+          required: true
+      optionalEnvironmentVariables:
+        - name: TFE_TOKEN
+          description: >-
+            HCP Terraform/TFE API authentication token
+          type: secret
+          required: false
+      recommendedResources:
+        minimal:
+          cpu: 100m
+          memory: 128Mi
+        recommended:
+          cpu: 250m
+          memory: 256Mi
+  - name: mariadb/mcp
+    displayName: MCP MariaDB Server
+    provider: MariaDB
+    version: 1.0.0
+    documentationUrl: https://github.com/mariadb/mcp
+    repositoryUrl: https://github.com/mariadb/mcp
+    license: MIT
+    description: >-
+      A standard interface for managing and querying MariaDB databases. Supports SQL operations, schema inspection, and optional
+      vector/embedding-based semantic search. Includes comprehensive vector search capabilities with support for OpenAI, Gemini, and Hugging Face embeddings.
+    transports:
+      - stdio
+      - http
+      - sse
+    deploymentMode: local
+    toolCount: 11
+    artifacts:
+      - uri: oci://quay.io/mcp-servers/mariadb-mcp:10-3-2025@sha256:95c179d08dad661bfb8fc0f6959976f9ad3f90d70a8ccb831978958e58bca73e
+    tags:
+      - mariadb
+      - mysql
+      - database
+      - sql
+      - vector-search
+      - embeddings
+      - semantic-search
+    securityIndicators:
+      verifiedSource: true
+      secureEndpoint: true
+      readOnlyTools: false
+    tools:
+      - name: list_databases
+        description: >-
+          Enumerate all accessible databases on the MariaDB server
+        accessType: read_only
+        parameters: [ ]
+      - name: list_tables
+        description: >-
+          Show all tables in a specified database
+        accessType: read_only
+        parameters:
+          - name: database
+            type: string
+            required: true
+            description: >-
+              Database name to list tables from
+      - name: get_table_schema
+        description: >-
+          Retrieve column definitions, types, and keys for a table
+        accessType: read_only
+        parameters:
+          - name: table
+            type: string
+            required: true
+            description: >-
+              Table name to get schema for
+      - name: get_table_schema_with_relations
+        description: >-
+          Retrieve table schema including foreign key relationships
+        accessType: read_only
+        parameters:
+          - name: table
+            type: string
+            required: true
+            description: >-
+              Table name to get schema with relations for
+      - name: execute_sql
+        description: >-
+          Run SQL queries (read-only mode by default, controlled by MCP_READ_ONLY env var)
+        accessType: read_write
+        parameters:
+          - name: query
+            type: string
+            required: true
+            description: >-
+              SQL query to execute
+      - name: create_database
+        description: >-
+          Create a new database on the MariaDB server
+        accessType: read_write
+        parameters:
+          - name: name
+            type: string
+            required: true
+            description: >-
+              Name of the database to create
+      - name: create_vector_store
+        description: >-
+          Initialize embedding storage with configurable distance functions
+        accessType: read_write
+        parameters:
+          - name: name
+            type: string
+            required: true
+            description: >-
+              Name for the vector store
+      - name: delete_vector_store
+        description: >-
+          Remove a vector store table
+        accessType: read_write
+        parameters:
+          - name: name
+            type: string
+            required: true
+            description: >-
+              Name of the vector store to delete
+      - name: list_vector_stores
+        description: >-
+          Display all available vector stores
+        accessType: read_only
+        parameters: [ ]
+      - name: insert_docs_vector_store
+        description: >-
+          Batch insert documents with optional metadata into a vector store
+        accessType: read_write
+        parameters:
+          - name: store_name
+            type: string
+            required: true
+            description: >-
+              Target vector store name
+          - name: documents
+            type: array
+            required: true
+            description: >-
+              Documents to insert with optional metadata
+      - name: search_vector_store
+        description: >-
+          Perform semantic similarity search across vector store documents
+        accessType: read_only
+        parameters:
+          - name: store_name
+            type: string
+            required: true
+            description: >-
+              Vector store to search
+          - name: query
+            type: string
+            required: true
+            description: >-
+              Search query text
+    runtimeMetadata:
+      defaultPort: 9001
+      requiredEnvironmentVariables:
+        - name: DB_HOST
+          description: >-
+            MariaDB server hostname
+          type: config
+          required: true
+        - name: DB_USER
+          description: >-
+            MariaDB username
+          type: secret
+          required: true
+        - name: DB_PASSWORD
+          description: >-
+            MariaDB password
+          type: secret
+          required: true
+      optionalEnvironmentVariables:
+        - name: DB_PORT
+          description: >-
+            MariaDB server port
+          type: config
+          default: '3306'
+        - name: MCP_READ_ONLY
+          description: >-
+            Enforce read-only mode for SQL queries
+          type: config
+          default: 'true'
+        - name: EMBEDDING_PROVIDER
+          description: >-
+            Embedding provider for vector operations (openai, gemini, huggingface)
+          type: config
+      recommendedResources:
+        minimal:
+          cpu: 250m
+          memory: 512Mi
+        recommended:
+          cpu: 500m
+          memory: 1Gi
+  - name: microsoft/azure-mcp-server
+    displayName: Azure MCP Server
+    provider: Microsoft
+    version: 2.0.0-beta
+    documentationUrl: https://learn.microsoft.com/en-us/azure/developer/azure-mcp-server/
+    repositoryUrl: https://github.com/microsoft/mcp/tree/main/servers/Azure.Mcp.Server
+    license: MIT
+    description: >-
+      Enables AI agents and MCP clients to interact with Azure resources through natural language commands. Provides tools for
+      Azure Storage, Cosmos DB, Key Vault, Azure Monitor, AKS, SQL, and 30+ other Azure services.
+    transports:
+      - stdio
+      - http
+    deploymentMode: local
+    toolCount: 50
+    artifacts:
+      - uri: oci://quay.io/mcp-servers/azure-mcp-server:runnable@sha256:aef2ded8aab4701489b1029360bb38225364ca8c3443b7fad94c0325adbb9a55
+    tags:
+      - azure
+      - microsoft
+      - cloud-management
+      - multi-service
+      - cosmos-db
+      - key-vault
+      - storage
+      - aks
+    securityIndicators:
+      verifiedSource: true
+      secureEndpoint: true
+      readOnlyTools: false
+    tools:
+      - name: cosmos
+        description: >-
+          Work with Azure Cosmos DB accounts, databases, containers, and documents
+        accessType: read_write
+        parameters:
+          - name: subscription
+            type: string
+            required: true
+            description: >-
+              Azure subscription ID
+      - name: keyvault
+        description: >-
+          List and create keys, secrets, certificates in Azure Key Vault
+        accessType: read_write
+        parameters:
+          - name: subscription
+            type: string
+            required: true
+            description: >-
+              Azure subscription ID
+      - name: storage
+        description: >-
+          Manage Azure Storage accounts, containers, blobs, and tables
+        accessType: read_write
+        parameters:
+          - name: subscription
+            type: string
+            required: true
+            description: >-
+              Azure subscription ID
+      - name: aks
+        description: >-
+          List Azure Kubernetes Service clusters
+        accessType: read_only
+        parameters:
+          - name: subscription
+            type: string
+            required: true
+            description: >-
+              Azure subscription ID
+      - name: sql
+        description: >-
+          Work with Azure SQL Database servers, databases, firewall rules
+        accessType: read_write
+        parameters:
+          - name: subscription
+            type: string
+            required: true
+            description: >-
+              Azure subscription ID
+    runtimeMetadata:
+      requiredEnvironmentVariables:
+        - name: AZURE_TENANT_ID
+          description: >-
+            Azure Entra ID tenant identifier
+          type: config
+          required: true
+        - name: AZURE_CLIENT_ID
+          description: >-
+            Azure Service Principal client ID
+          type: secret
+          required: true
+        - name: AZURE_CLIENT_SECRET
+          description: >-
+            Azure Service Principal client secret
+          type: secret
+          required: true
+      recommendedResources:
+        minimal:
+          cpu: 100m
+          memory: 256Mi
+        recommended:
+          cpu: 500m
+          memory: 512Mi
+  - name: mongodb-js/mongodb-mcp-server
+    displayName: MongoDB MCP Server
+    provider: MongoDB
+    version: 1.0.0
+    documentationUrl: https://www.mongodb.com/docs/mcp-server/get-started/
+    repositoryUrl: https://github.com/mongodb-js/mongodb-mcp-server
+    license: Apache-2.0
+    description: >-
+      Interact with MongoDB databases and MongoDB Atlas. Provides database operations, Atlas cluster management, performance analysis,
+      and query execution capabilities.
+    transports:
+      - stdio
+      - http
+    deploymentMode: local
+    toolCount: 39
+    artifacts:
+      - uri: oci://quay.io/mcp-servers/mongodb-mcp-server:10-01-2025@sha256:db0af62ed8a85eb694969c167031129cfec7c6e12ab59fbb79317e7702355079
+    tags:
+      - mongodb
+      - nosql
+      - database
+      - atlas
+      - document-database
+      - aggregation
+      - query
+    securityIndicators:
+      verifiedSource: true
+      secureEndpoint: true
+      readOnlyTools: false
+    tools:
+      - name: find
+        description: >-
+          Run a find query against a MongoDB collection
+        accessType: read_only
+        parameters: [ ]
+      - name: aggregate
+        description: >-
+          Run an aggregation against a MongoDB collection
+        accessType: read_only
+        parameters: [ ]
+      - name: insert-many
+        description: >-
+          Insert an array of documents into a MongoDB collection
+        accessType: read_write
+        parameters: [ ]
+      - name: update-many
+        description: >-
+          Updates all documents matching the specified filter
+        accessType: read_write
+        parameters: [ ]
+      - name: delete-many
+        description: >-
+          Removes all documents matching the filter from a collection
+        accessType: read_write
+        parameters: [ ]
+      - name: list-databases
+        description: >-
+          List all databases for a MongoDB connection
+        accessType: read_only
+        parameters: [ ]
+      - name: list-collections
+        description: >-
+          List all collections for a given database
+        accessType: read_only
+        parameters: [ ]
+      - name: collection-schema
+        description: >-
+          Describe the schema for a collection
+        accessType: read_only
+        parameters: [ ]
+      - name: collection-indexes
+        description: >-
+          Describe the indexes for a collection
+        accessType: read_only
+        parameters: [ ]
+      - name: create-index
+        description: >-
+          Create an index for a collection
+        accessType: read_write
+        parameters: [ ]
+      - name: atlas-list-clusters
+        description: >-
+          List MongoDB Atlas clusters
+        accessType: read_only
+        parameters: [ ]
+      - name: atlas-get-performance-advisor
+        description: >-
+          Retrieve performance suggestions including index recommendations and slow query logs
+        accessType: read_only
+        parameters: [ ]
+      - name: atlas-list-alerts
+        description: >-
+          List MongoDB Atlas alerts
+        accessType: read_only
+        parameters: [ ]
+    runtimeMetadata:
+      defaultPort: 9002
+      defaultArgs:
+        - --transport
+        - http
+        - --httpHost
+        - 0.0.0.0
+        - --httpPort
+        - '9002'
+        - --readOnly
+      requiredEnvironmentVariables:
+        - name: MDB_MCP_CONNECTION_STRING
+          description: >-
+            MongoDB connection URI
+          type: secret
+          required: true
+      optionalEnvironmentVariables:
+        - name: MDB_MCP_API_CLIENT_ID
+          description: >-
+            MongoDB Atlas Service Account Client ID
+          type: secret
+          required: false
+        - name: MDB_MCP_API_CLIENT_SECRET
+          description: >-
+            MongoDB Atlas Service Account Client Secret
+          type: secret
+          required: false
+      recommendedResources:
+        minimal:
+          cpu: 100m
+          memory: 256Mi
+        recommended:
+          cpu: 500m
+          memory: 512Mi
+  - name: PaloAltoNetworks/pan-mcp-relay
+    displayName: Prisma AIRS MCP Security Relay
+    provider: Palo Alto Networks
+    documentationUrl: https://docs.paloaltonetworks.com/ai-runtime-security/activation-and-onboarding/prisma-airs-mcp-server-for-centralized-ai-agent-security
+    repositoryUrl: https://github.com/PaloAltoNetworks/pan-mcp-relay
+    license: Polyform Internal Use License 1.0.0
+    description: >-
+      Real-time AI threat protection for MCP clients, built with the Prisma AIRS AI Runtime API Intercept. Acts as a security relay/proxy
+      that scans MCP tool descriptions, call parameters, and responses to detect and block threats including prompt injections, malicious URLs,
+      sensitive data loss, and more. NOTE: This is a security relay/proxy - it sits between MCP clients and downstream MCP servers.
+    transports:
+      - stdio
+      - http
+      - sse
+    deploymentMode: local
+    toolCount: 1
+    artifacts:
+      - uri: oci://quay.io/mcp-servers/prisma-airs-mcp:10-06-2025@sha256:97bf03f9f40d5efbe48c747b7702ffc88b544aa8882b22b4e95d647b258dd318
+    tags:
+      - prisma-airs
+      - palo-alto-networks
+      - security
+      - threat-detection
+      - relay
+      - proxy
+      - ai-security
+      - prompt-injection
+      - data-loss-prevention
+    securityIndicators:
+      verifiedSource: true
+      secureEndpoint: true
+      readOnlyTools: true
+    tools:
+      - name: pan_inline_scan
+        description: >-
+          Scans text content through Prisma AIRS threat detection engine and returns allow/block action
+        accessType: read_only
+        parameters:
+          - name: text
+            type: string
+            required: true
+            description: >-
+              Text content to scan for threats
+    runtimeMetadata:
+      defaultPort: 8000
+      defaultArgs:
+        - --transport
+        - http
+      requiredEnvironmentVariables:
+        - name: PRISMA_AIRS_API_KEY
+          description: >-
+            Prisma AIRS API key for authentication
+          type: secret
+          required: true
+        - name: PRISMA_AIRS_AI_PROFILE
+          description: >-
+            AI security profile name for threat detection rules
+          type: config
+          required: true
+        - name: MCP_RELAY_TRANSPORT
+          description: >-
+            Transport protocol mode
+          type: config
+          required: true
+        - name: MCP_RELAY_HOST
+          description: >-
+            HTTP server bind address
+          type: config
+          required: true
+      recommendedResources:
+        minimal:
+          cpu: 100m
+          memory: 128Mi
+        recommended:
+          cpu: 250m
+          memory: 256Mi
+  - name: cyberark/cyberark-sca-mcp-server
+    displayName: CyberArk SCA MCP Server
+    provider: CyberArk
+    documentationUrl: https://docs.cyberark.com/sca/latest/en/content/automation/sca-mcp-server.htm
+    license: ???
+    description: >-
+      This topic describes the CyberArk SCA MCP Server, which helps you manage AWS access by allowing AI agents and developers to request and elevate
+      permissions to standalone AWS accounts when needed. It works with SCA and is designed to be used from the command line, IDE, or through an AI assistant.
+      
+      When access is granted, the server writes temporary credentials to the AWS credentials file, allowing tools and agents to authenticate without 
+      using long-term secrets. This helps reduce security risks by keeping access temporary and on-demand.
+      
+      This is useful in workflows like CI/CD, infrastructure as code, and AI-powered development tools.
+    transports:
+      - http
+    deploymentMode: local
+    artifacts:
+      - uri: oci://quay.io/mcp-servers/cyberark-mcp-server-sca:11-01-2025
+    tools:
+      - name: login_to_aws_default
+        description: >-
+          Grants temporary, just-in-time access to the default AWS account and role configured on the server.
+        accessType: read_only
+        parameters: [ ]
+      - name: elevate_aws_account_access
+        description: >-
+          Grants temporary, just-in-time access to a specified AWS account using a designated role.
+        accessType: read_only
+        parameters: [ ]
+    securityIndicators:
+      verifiedSource: false
+      sast: true
+      secureEndpoint: true
+      readOnlyTools: false
+  - name: oracle/oci-cloud-mcp-server
+    displayName: Oracle OCI Cloud MCP Server
+    provider: Oracle
+    version: 1.0.0
+    documentationUrl: https://github.com/oracle/mcp/blob/main/src/oci-cloud-mcp-server/README.md
+    repositoryUrl: https://github.com/oracle/mcp/tree/main/src/oci-cloud-mcp-server
+    license: Universal Permissive License v1.0
+    description: >-
+      Interact with Oracle Cloud Infrastructure (OCI) services using the official OCI Python SDK directly. Supports comprehensive OCI service access including Compute, VirtualNetwork, Identity, and more through native SDK operations.
+    transports:
+      - stdio
+      - http
+    deploymentMode: remote
+    toolCount: 2
+    artifacts:
+      - uri: oci://quay.io/mcp-servers/oracle/oci-cloud-mcp-server:2026-03-17@sha256:8995e6ce6bb0fc98dbe28fdbeac007ef7280345de96dd297e0311b4e252e0284
+    tags:
+      - cloud-provider
+      - oracle
+      - oci
+      - infrastructure
+      - compute
+      - networking
+      - identity
+      - sdk
+    securityIndicators:
+      verifiedSource: true
+      secureEndpoint: true
+      sast: false
+      readOnlyTools: false
+    tools:
+      - name: invoke_oci_api
+        description: >-
+          Execute OCI Python SDK operations programmatically. Supports any OCI service accessible via the Python SDK with automatic pagination for list operations.
+        accessType: execute
+        parameters:
+          - name: client_fqn
+            type: string
+            required: true
+            description: >-
+              Fully-qualified client class name (e.g., oci.core.ComputeClient)
+          - name: operation
+            type: string
+            required: true
+            description: >-
+              SDK method name in snake_case (e.g., list_instances, launch_instance)
+          - name: params
+            type: object
+            required: true
+            description: >-
+              JSON object containing keyword arguments matching SDK method signatures. Parameters ending with _details, _config, etc. are auto-converted to OCI model objects.
+      - name: list_client_operations
+        description: >-
+          Discover available operations for OCI client classes with docstring-extracted summaries.
+        accessType: read_only
+        parameters:
+          - name: client_fqn
+            type: string
+            required: true
+            description: >-
+              Fully-qualified client class name to inspect
+    runtimeMetadata:
+      defaultPort: 8080
+      defaultArgs: [ ]
+      requiredEnvironmentVariables:
+        - name: OCI_CONFIG_FILE_CONTENT
+          description: >-
+            Base64-encoded OCI configuration file content (~/.oci/config). Contains API key credentials and tenancy information.
+          type: secret
+          required: true
+        - name: OCI_KEY_FILE_CONTENT
+          description: >-
+            Base64-encoded OCI API private key file content. Required for API key signer authentication.
+          type: secret
+          required: true
+        - name: ORACLE_MCP_HOST
+          description: >-
+            Hostname or IP address for HTTP transport mode (e.g., 0.0.0.0 for all interfaces)
+          type: config
+          required: true
+        - name: ORACLE_MCP_PORT
+          description: >-
+            Port number for HTTP transport mode (e.g., 8080)
+          type: config
+          required: true
+      optionalEnvironmentVariables:
+        - name: OCI_CONFIG_PROFILE
+          description: >-
+            Alternate OCI configuration profile name (default is DEFAULT profile)
+          type: config
+          required: false
+        - name: OCI_SECURITY_TOKEN_FILE_CONTENT
+          description: >-
+            Base64-encoded security token file content. If provided, uses Security Token Signer instead of API key signer.
+          type: secret
+          required: false
+      recommendedResources:
+        minimal:
+          cpu: 100m
+          memory: 128Mi
+        recommended:
+          cpu: 250m
+          memory: 256Mi
